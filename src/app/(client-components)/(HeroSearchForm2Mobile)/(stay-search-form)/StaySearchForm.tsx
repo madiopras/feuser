@@ -1,35 +1,24 @@
 "use client";
 
-import converSelectedDateToString from "@/utils/converSelectedDateToString";
-import React, { useState } from "react";
-import { GuestsObject } from "../../type";
-import GuestsInput from "../GuestsInput";
+import React, { useState, useEffect } from "react";
 import LocationInput from "../LocationInput";
 import DatesRangeInput from "../DatesRangeInput";
+import GuestsInput from "../GuestsInput";
+import { GuestsObject } from "../../type";
 
 const StaySearchForm = () => {
-  //
-  const [fieldNameShow, setFieldNameShow] = useState<
-    "location" | "dates" | "guests"
-  >("location");
-  //
-  const [locationInputTo, setLocationInputTo] = useState("");
+  const [fieldNameShow, setFieldNameShow] = useState<"location" | "dates" | "guests">("location");
+  const [locationInputValue, setLocationInputValue] = useState("");
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const [guestInput, setGuestInput] = useState<GuestsObject>({
     guestAdults: 0,
     guestChildren: 0,
     guestInfants: 0,
   });
-  const [startDate, setStartDate] = useState<Date | null>(
-    new Date("2023/02/06")
-  );
-  const [endDate, setEndDate] = useState<Date | null>(new Date("2023/02/23"));
-  //
-
-  const onChangeDate = (dates: [Date | null, Date | null]) => {
-    const [start, end] = dates;
-    setStartDate(start);
-    setEndDate(end);
-  };
 
   const renderInputLocation = () => {
     const isActive = fieldNameShow === "location";
@@ -46,14 +35,14 @@ const StaySearchForm = () => {
             className={`w-full flex justify-between text-sm font-medium p-4`}
             onClick={() => setFieldNameShow("location")}
           >
-            <span className="text-neutral-400">Where</span>
-            <span>{locationInputTo || "Location"}</span>
+            <span className="text-neutral-400">Location</span>
+            <span>{locationInputValue || "Location"}</span>
           </button>
         ) : (
           <LocationInput
-            defaultValue={locationInputTo}
+            defaultValue={locationInputValue}
             onChange={(value) => {
-              setLocationInputTo(value);
+              setLocationInputValue(value);
               setFieldNameShow("dates");
             }}
           />
@@ -64,7 +53,6 @@ const StaySearchForm = () => {
 
   const renderInputDates = () => {
     const isActive = fieldNameShow === "dates";
-
     return (
       <div
         className={`w-full bg-white dark:bg-neutral-800 overflow-hidden ${
@@ -75,18 +63,27 @@ const StaySearchForm = () => {
       >
         {!isActive ? (
           <button
-            className={`w-full flex justify-between text-sm font-medium p-4  `}
+            className={`w-full flex justify-between text-sm font-medium p-4`}
             onClick={() => setFieldNameShow("dates")}
           >
             <span className="text-neutral-400">When</span>
             <span>
-              {startDate
-                ? converSelectedDateToString([startDate, endDate])
-                : "Add date"}
+              {mounted && startDate ? 
+                startDate.toLocaleDateString('en-US', { 
+                  month: 'short', 
+                  day: 'numeric', 
+                  year: 'numeric' 
+                }) : "Add date"}
             </span>
           </button>
         ) : (
-          <DatesRangeInput />
+          <DatesRangeInput 
+            defaultValue={startDate}
+            onChange={(date) => {
+              setStartDate(date);
+              setFieldNameShow("guests");
+            }}
+          />
         )}
       </div>
     );
@@ -94,16 +91,8 @@ const StaySearchForm = () => {
 
   const renderInputGuests = () => {
     const isActive = fieldNameShow === "guests";
-    let guestSelected = "";
-    if (guestInput.guestAdults || guestInput.guestChildren) {
-      const guest =
-        (guestInput.guestAdults || 0) + (guestInput.guestChildren || 0);
-      guestSelected += `${guest} guests`;
-    }
-
-    if (guestInput.guestInfants) {
-      guestSelected += `, ${guestInput.guestInfants} infants`;
-    }
+    const guestCount = (guestInput?.guestAdults || 0) + (guestInput?.guestChildren || 0);
+    const guestText = `${guestCount} Guest${guestCount > 1 ? 's' : ''}${guestInput?.guestInfants ? `, ${guestInput.guestInfants} Infant${guestInput.guestInfants > 1 ? 's' : ''}` : ''}`;
 
     return (
       <div
@@ -118,11 +107,14 @@ const StaySearchForm = () => {
             className={`w-full flex justify-between text-sm font-medium p-4`}
             onClick={() => setFieldNameShow("guests")}
           >
-            <span className="text-neutral-400">Who</span>
-            <span>{guestSelected || `Add guests`}</span>
+            <span className="text-neutral-400">Guests</span>
+            <span>{guestText}</span>
           </button>
         ) : (
-          <GuestsInput defaultValue={guestInput} onChange={setGuestInput} />
+          <GuestsInput
+            defaultValue={guestInput}
+            onChange={setGuestInput}
+          />
         )}
       </div>
     );
@@ -131,11 +123,8 @@ const StaySearchForm = () => {
   return (
     <div>
       <div className="w-full space-y-5">
-        {/*  */}
         {renderInputLocation()}
-        {/*  */}
         {renderInputDates()}
-        {/*  */}
         {renderInputGuests()}
       </div>
     </div>

@@ -1,33 +1,148 @@
 "use client";
-import React, { useState, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import LocationInput from "../LocationInput";
 import GuestsInput from "../GuestsInput";
-import DatesRangeInput from "../DatesRangeInput";
 import { GuestsObject } from "../../type";
-import converSelectedDateToString from "@/utils/converSelectedDateToString";
-import { Dialog as HeadlessDialog, Transition } from "@headlessui/react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "@/styles/custom-datepicker.css";
+import { id } from 'date-fns/locale';
+import axios from '@/lib/axios';
+import { useRouter } from 'next/navigation';
+import dynamic from "next/dynamic";
 
-const BusSearchForm = () => {
-  //
+interface Location {
+  id: number;
+  name: string;
+  place: string;
+}
+
+interface BusClass {
+  id: number;
+  name: string;
+}
+
+const BusSearchForm = React.forwardRef<{ handleSubmit: () => Promise<void>; handleReset: () => void }>((_, ref) => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [fieldNameShow, setFieldNameShow] = useState<
     "locationPickup" | "locationDropoff" | "dates" | "guests" | "general"
   >("dates");
-  //
+
   const [locationInputPickUp, setLocationInputPickUp] = useState("");
   const [locationInputDropOff, setLocationInputDropOff] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-  const [showDateModal, setShowDateModal] = useState(false);
-
-  const [flightClassState, setFlightClassState] = useState("Economy");
-
+  const [flightClassState, setFlightClassState] = useState("");
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [busClasses, setBusClasses] = useState<BusClass[]>([]);
   const [guestInput, setGuestInput] = useState<GuestsObject>({
-    guestAdults: 0,
+    guestAdults: 1,
     guestChildren: 0,
     guestInfants: 0,
   });
 
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await axios.get('/api/guest/locations/get-name');
+        if (response.data.status && response.data.data) {
+          setLocations(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching locations:", error);
+      }
+    };
+
+    const fetchBusClasses = async () => {
+      try {
+        const response = await axios.get('/api/guest/classes/get-name');
+        if (response.data.status && response.data.data) {
+          const allClasses = [
+            { id: 0, name: "Semua" },
+            ...response.data.data
+          ];
+          setBusClasses(allClasses);
+          setFlightClassState("Semua");
+        }
+      } catch (error) {
+        console.error("Error fetching bus classes:", error);
+      }
+    };
+
+    fetchLocations();
+    fetchBusClasses();
+  }, []);
+
+  const handleSubmit = async () => {
+    const selectedPickup = locations.find(loc => loc.name === locationInputPickUp);
+    const selectedDropoff = locations.find(loc => loc.name === locationInputDropOff);
+
+    if (!selectedDate || !selectedPickup || !selectedDropoff) {
+      alert("Mohon lengkapi semua data pencarian");
+      return;
+    }
+
+    setIsLoading(true);
+    const departureDate = new Date(selectedDate);
+    const endDate = new Date(departureDate);
+    endDate.setDate(endDate.getDate() + 7);
+
+    try {
+      const params: Record<string, string> = {
+        page: "1",
+        limit: "10",
+        dari: selectedPickup.id.toString(),
+        ke: selectedDropoff.id.toString(),
+        departure_start: departureDate.toISOString().split('T')[0],
+        departure_end: endDate.toISOString().split('T')[0],
+        selected_seats: (guestInput.guestAdults || 1).toString()
+      };
+
+      if (flightClassState !== "Semua") {
+        const selectedClass = busClasses.find(bc => bc.name === flightClassState);
+        if (selectedClass) {
+          params.class = selectedClass.id.toString();
+        }
+      }
+
+      const response = await axios.get('/api/guest/schedule-rutes', { params });
+      
+      if (response.data.status && response.data.data) {
+        const searchParams = new URLSearchParams(params);
+        router.push(`/listing-buses?${searchParams.toString()}`);
+      } else {
+        alert("Tidak ada jadwal yang tersedia untuk pencarian ini");
+      }
+    } catch (error) {
+      console.error("Error searching schedules:", error);
+      alert("Terjadi kesalahan saat mencari jadwal. Silakan coba lagi.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleReset = () => {
+    setLocationInputPickUp("");
+    setLocationInputDropOff("");
+    setSelectedDate(new Date());
+    setFlightClassState("Semua");
+    setGuestInput({
+      guestAdults: 1,
+      guestChildren: 0,
+      guestInfants: 0,
+    });
+    setFieldNameShow("dates");
+  };
+
+  React.useImperativeHandle(ref, () => ({
+    handleSubmit,
+    handleReset
+  }));
+
   const renderInputLocationPickup = () => {
     const isActive = fieldNameShow === "locationPickup";
+    const selectedLocation = locations.find(loc => loc.name === locationInputPickUp);
+    
     return (
       <div className={`w-full bg-white dark:bg-neutral-800 ${
         isActive ? "rounded-2xl shadow-lg" : "rounded-xl shadow-[0px_2px_2px_0px_rgba(0,0,0,0.25)]"
@@ -40,7 +155,7 @@ const BusSearchForm = () => {
             <span className="text-primary-600 font-medium text-sm">Kota Keberangkatan</span>
             <div className="flex justify-between w-full">
               <span className="text-neutral-900 dark:text-white">
-                {locationInputPickUp || "Pilih kota keberangkatan Anda"}
+                {selectedLocation ? selectedLocation.name : "Pilih kota keberangkatan Anda"}
               </span>
               <span className="text-neutral-400">
                 <i className="las la-map-marker text-lg"></i>
@@ -53,8 +168,11 @@ const BusSearchForm = () => {
             subHeading="Pilih kota atau terminal keberangkatan"
             defaultValue={locationInputPickUp}
             onChange={(value) => {
-              setLocationInputPickUp(value);
-              setFieldNameShow("locationDropoff");
+              const location = locations.find(loc => loc.name === value);
+              if (location) {
+                setLocationInputPickUp(location.name);
+                setFieldNameShow("locationDropoff");
+              }
             }}
           />
         )}
@@ -64,6 +182,8 @@ const BusSearchForm = () => {
 
   const renderInputLocationDropoff = () => {
     const isActive = fieldNameShow === "locationDropoff";
+    const selectedLocation = locations.find(loc => loc.name === locationInputDropOff);
+    
     return (
       <div
         className={`w-full bg-white dark:bg-neutral-800 ${
@@ -74,19 +194,29 @@ const BusSearchForm = () => {
       >
         {!isActive ? (
           <button
-            className={`w-full flex justify-between text-sm font-medium p-4`}
+            className="w-full flex flex-col items-start p-4 gap-1"
             onClick={() => setFieldNameShow("locationDropoff")}
           >
-            <span className="text-neutral-400">Pergi ke</span>
-            <span>{locationInputDropOff || "Location"}</span>
+            <span className="text-primary-600 font-medium text-sm">Kota Tujuan</span>
+            <div className="flex justify-between w-full">
+              <span className="text-neutral-900 dark:text-white">
+                {selectedLocation ? selectedLocation.name : "Pilih kota tujuan Anda"}
+              </span>
+              <span className="text-neutral-400">
+                <i className="las la-map-marker text-lg"></i>
+              </span>
+            </div>
           </button>
         ) : (
           <LocationInput
             headingText="Pergi ke?"
             defaultValue={locationInputDropOff}
             onChange={(value) => {
-              setLocationInputDropOff(value);
-              setFieldNameShow("general");
+              const location = locations.find(loc => loc.name === value);
+              if (location) {
+                setLocationInputDropOff(location.name);
+                setFieldNameShow("general");
+              }
             }}
           />
         )}
@@ -123,13 +253,70 @@ const BusSearchForm = () => {
             </div>
           </button>
         ) : (
-          <DatesRangeInput 
-            defaultValue={selectedDate}
-            onChange={(date) => {
-              setSelectedDate(date);
-              setFieldNameShow("locationPickup");
-            }}
-          />
+          <div className="p-5">
+            <div className="flex flex-col space-y-4">
+              <span className="text-lg font-semibold">
+                Pilih Tanggal Keberangkatan
+              </span>
+              <DatePicker
+                selected={selectedDate}
+                onChange={(date) => {
+                  setSelectedDate(date);
+                  setFieldNameShow("locationPickup");
+                }}
+                inline
+                minDate={new Date()}
+                locale={id}
+                dateFormat="dd MMMM yyyy"
+                showDisabledMonthNavigation
+                calendarClassName="custom-calendar"
+                dayClassName={(date) => {
+                  if (selectedDate && date.toDateString() === selectedDate.toDateString()) {
+                    return "bg-indigo-500 text-white rounded-full hover:bg-indigo-600";
+                  }
+                  return "text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded-full";
+                }}
+                monthClassName={() => "custom-month"}
+                weekDayClassName={() => "custom-week-day"}
+                renderCustomHeader={({
+                  date,
+                  decreaseMonth,
+                  increaseMonth,
+                  prevMonthButtonDisabled,
+                  nextMonthButtonDisabled,
+                }) => (
+                  <div className="flex items-center justify-between px-4 py-2">
+                    <button
+                      onClick={decreaseMonth}
+                      disabled={prevMonthButtonDisabled}
+                      type="button"
+                      className={`p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700 ${
+                        prevMonthButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
+                    >
+                      <i className="las la-chevron-left text-xl"></i>
+                    </button>
+                    <h3 className="text-lg font-semibold">
+                      {date.toLocaleDateString('id-ID', {
+                        month: 'long',
+                        year: 'numeric',
+                      })}
+                    </h3>
+                    <button
+                      onClick={increaseMonth}
+                      disabled={nextMonthButtonDisabled}
+                      type="button"
+                      className={`p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700 ${
+                        nextMonthButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
+                    >
+                      <i className="las la-chevron-right text-xl"></i>
+                    </button>
+                  </div>
+                )}
+              />
+            </div>
+          </div>
         )}
       </div>
     );
@@ -137,6 +324,8 @@ const BusSearchForm = () => {
 
   const renderGenerals = () => {
     const isActive = fieldNameShow === "general";
+    const selectedClass = busClasses.find(bc => bc.name === flightClassState);
+    
     return (
       <div
         className={`w-full bg-white dark:bg-neutral-800 overflow-hidden ${
@@ -147,11 +336,18 @@ const BusSearchForm = () => {
       >
         {!isActive ? (
           <button
-            className={`w-full flex justify-between text-sm font-medium p-4`}
+            className="w-full flex flex-col items-start p-4 gap-1"
             onClick={() => setFieldNameShow("general")}
           >
-            <span className="text-neutral-400">Kelas Bus</span>
-            <span>{flightClassState}</span>
+            <span className="text-primary-600 font-medium text-sm">Kelas Bus</span>
+            <div className="flex justify-between w-full">
+              <span className="text-neutral-900 dark:text-white">
+                {selectedClass?.name || "Pilih kelas bus"}
+              </span>
+              <span className="text-neutral-400">
+                <i className="las la-bus text-lg"></i>
+              </span>
+            </div>
           </button>
         ) : (
           <div className="p-5">
@@ -161,9 +357,27 @@ const BusSearchForm = () => {
             <div className="relative mt-5">
               <div className="mt-6">
                 <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {renderRadio("class", "Economy", "Ekonomi")}
-                  {renderRadio("class", "Business", "Bisnis")}
-                  {renderRadio("class", "Multiple", "Eksekutif")}
+                  {busClasses.map((busClass) => (
+                    <div key={busClass.id} className="flex items-center">
+                      <input
+                        id={`class-${busClass.id}`}
+                        name="class"
+                        type="radio"
+                        checked={flightClassState === busClass.name}
+                        onChange={() => {
+                          setFlightClassState(busClass.name);
+                          setFieldNameShow("guests");
+                        }}
+                        className="focus:ring-primary-500 h-6 w-6 text-primary-500 border-neutral-300 !checked:bg-primary-500 bg-transparent"
+                      />
+                      <label
+                        htmlFor={`class-${busClass.id}`}
+                        className="ml-3 block text-sm font-medium text-neutral-700 dark:text-neutral-300"
+                      >
+                        {busClass.name}
+                      </label>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -173,38 +387,11 @@ const BusSearchForm = () => {
     );
   };
 
-  const renderRadio = (
-    name: string,
-    id: string,
-    label: string,
-    defaultChecked?: boolean
-  ) => {
-    return (
-      <div className="flex items-center ">
-        <input
-          defaultChecked={flightClassState === label}
-          id={id + name}
-          name={name}
-          onChange={() => setFlightClassState(label)}
-          type="radio"
-          className="focus:ring-primary-500 h-6 w-6 text-primary-500 border-neutral-300 !checked:bg-primary-500 bg-transparent"
-        />
-        <label
-          htmlFor={id + name}
-          className="ml-3 block text-sm font-medium text-neutral-700 dark:text-neutral-300"
-        >
-          {label}
-        </label>
-      </div>
-    );
-  };
-
   const renderInputGuests = () => {
     const isActive = fieldNameShow === "guests";
     let guestSelected = "";
     if (guestInput.guestAdults) {
-      const guest =
-        (guestInput.guestAdults || 0);
+      const guest = Math.min(Math.max(guestInput.guestAdults || 0, 1), 4);
       guestSelected += `${guest} penumpang`;
     }
 
@@ -218,14 +405,37 @@ const BusSearchForm = () => {
       >
         {!isActive ? (
           <button
-            className={`w-full flex justify-between text-sm font-medium p-4`}
+            className="w-full flex flex-col items-start p-4 gap-1"
             onClick={() => setFieldNameShow("guests")}
           >
-            <span className="text-neutral-400">Jumlah Kursi</span>
-            <span>{guestSelected || `Tambah penumpang`}</span>
+            <span className="text-primary-600 font-medium text-sm">Jumlah Kursi</span>
+            <div className="flex justify-between w-full">
+              <span className="text-neutral-900 dark:text-white">
+                {guestSelected || "1 penumpang"}
+              </span>
+              <span className="text-neutral-400">
+                <i className="las la-user-friends text-lg"></i>
+              </span>
+            </div>
           </button>
         ) : (
-          <GuestsInput defaultValue={guestInput} onChange={setGuestInput} />
+          <GuestsInput 
+            defaultValue={{
+              ...guestInput,
+              guestAdults: Math.min(Math.max(guestInput.guestAdults || 1, 1), 4)
+            }} 
+            onChange={(value) => {
+              const adults = Math.min(Math.max(value.guestAdults || 1, 1), 4);
+              setGuestInput({
+                ...value,
+                guestAdults: adults,
+                guestChildren: 0,
+                guestInfants: 0
+              });
+            }}
+            maxValue={4}
+            minValue={1}
+          />
         )}
       </div>
     );
@@ -242,6 +452,8 @@ const BusSearchForm = () => {
       </div>
     </div>
   );
-};
+});
 
-export default BusSearchForm;
+export default dynamic(() => Promise.resolve(BusSearchForm), {
+  ssr: false
+});

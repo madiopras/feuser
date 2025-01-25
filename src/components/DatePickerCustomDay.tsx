@@ -1,12 +1,16 @@
-import React, { FC } from "react";
+import React from "react";
 
 interface Props {
   dayOfMonth: number;
-  date?: Date | undefined;
+  date?: Date;
 }
 
-const DatePickerCustomDay: FC<Props> = ({ dayOfMonth, date }) => {
-  return <span className="react-datepicker__day_span">{dayOfMonth}</span>;
+const DatePickerCustomDay = ({ dayOfMonth, date }: Props) => {
+  return (
+    <div className="nc-DatePickerCustomDay">
+      {dayOfMonth}
+    </div>
+  );
 };
 
 export default DatePickerCustomDay;

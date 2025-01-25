@@ -1,70 +1,145 @@
-import React, { FC } from "react";
-import TabFilters from "./TabFilters";
-import Heading2 from "@/shared/Heading2";
-import BusCard, { BusCardProps } from "@/components/BusCard";
-import ButtonPrimary from "@/shared/ButtonPrimary";
+import React from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export interface SectionGridFilterCardProps {
-  className?: string;
+interface SectionGridFilterCardProps {
+  schedules: any[];
+  isLoading: boolean;
+  currentPage: number;
+  totalPages: number;
+  renderCard: (item: any) => React.ReactNode;
 }
 
-const DEMO_DATA: BusCardProps["data"][] = [
-  {
-    id: "1",
-    price: "Rp. 50.000",
-    buses: {
-      logo: "https://www.gstatic.com/flights/airline_logos/70px/KE.png",
-      name: "Sumatera Eksekutif",
-    },
-  },
-  {
-    id: "2",
-    price: "Rp. 85.000",
-    buses: {
-      logo: "https://www.gstatic.com/flights/airline_logos/70px/SQ.png",
-      name: "Sumatra VIP",
-    },
-  },
-  {
-    id: "3",
-    price: "Rp. 100.000",
-    buses: {
-      logo: "https://www.gstatic.com/flights/airline_logos/70px/multi.png",
-      name: "Sumatra Double Decker",
-    },
-  },
-];
-
-const SectionGridFilterCard: FC<SectionGridFilterCardProps> = ({
-  className = "",
+const SectionGridFilterCard: React.FC<SectionGridFilterCardProps> = ({
+  schedules,
+  isLoading,
+  currentPage,
+  totalPages,
+  renderCard,
 }) => {
-  return (
-    <div
-      className={`nc-SectionGridFilterCard ${className}`}
-      data-nc-id="SectionGridFilterCard">
-      <Heading2
-        heading="Medan - Pematangsiantar"
-        subHeading={
-          <span className="block text-neutral-500 dark:text-neutral-400 mt-3">
-            22 Bus
-            <span className="mx-2">·</span>
-            Semua Kelas
-            <span className="mx-2">·</span>2 Kursi
-          </span>
-        }
-      />
-      <div className="mb-8 lg:mb-11">
-        <TabFilters />
-      </div>
-      <div className="lg:p-10 lg:bg-neutral-50 lg:dark:bg-black/20 grid grid-cols-1 gap-6  rounded-3xl">
-        {DEMO_DATA.map((item, index) => (
-          <BusCard key={index} data={item} />
-        ))}
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-        <div className="flex mt-12 justify-center items-center">
-          <ButtonPrimary loading>Show more</ButtonPrimary>
-        </div>
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams?.toString());
+    params.set('page', page.toString());
+    router.push(`/listing-buses?${params.toString()}`);
+  };
+
+  const renderPagination = () => {
+    const pages = [];
+    const maxVisible = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+    if (endPage - startPage + 1 < maxVisible) {
+      startPage = Math.max(1, endPage - maxVisible + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          className={`w-10 h-10 flex items-center justify-center rounded-full mx-1 transition-colors ${
+            currentPage === i
+              ? "bg-primary-6000 text-white"
+              : "bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+          }`}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    return (
+      <div className="flex items-center justify-center space-x-2">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors ${
+            currentPage === 1
+              ? "opacity-50 cursor-not-allowed bg-neutral-100 dark:bg-neutral-800"
+              : "bg-white dark:bg-neutral-900 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+          }`}
+        >
+          <i className="las la-angle-left text-xl"></i>
+        </button>
+
+        {startPage > 1 && (
+          <>
+            <button
+              onClick={() => handlePageChange(1)}
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+            >
+              1
+            </button>
+            {startPage > 2 && (
+              <span className="px-2 text-neutral-500">...</span>
+            )}
+          </>
+        )}
+
+        {pages}
+
+        {endPage < totalPages && (
+          <>
+            {endPage < totalPages - 1 && (
+              <span className="px-2 text-neutral-500">...</span>
+            )}
+            <button
+              onClick={() => handlePageChange(totalPages)}
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+            >
+              {totalPages}
+            </button>
+          </>
+        )}
+
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors ${
+            currentPage === totalPages
+              ? "opacity-50 cursor-not-allowed bg-neutral-100 dark:bg-neutral-800"
+              : "bg-white dark:bg-neutral-900 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+          }`}
+        >
+          <i className="las la-angle-right text-xl"></i>
+        </button>
       </div>
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+      </div>
+    );
+  }
+
+  if (schedules.length === 0) {
+    return (
+      <div className="bg-neutral-50 dark:bg-neutral-800 p-8 rounded-2xl text-center">
+        <h2 className="text-2xl font-semibold mb-4">Tidak Ada Bus Tersedia</h2>
+        <p className="text-neutral-600 dark:text-neutral-400">
+          Maaf, tidak ada jadwal bus yang tersedia untuk pencarian Anda.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="grid grid-cols-1 gap-6">
+        {schedules.map((item, index) => renderCard(item))}
+      </div>
+
+      {totalPages > 1 && (
+        <div className="flex mt-12 justify-center items-center">
+          {renderPagination()}
+        </div>
+      )}
     </div>
   );
 };
