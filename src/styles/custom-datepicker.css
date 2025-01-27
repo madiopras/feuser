@@ -1,0 +1,168 @@
+.react-datepicker {
+  @apply bg-white dark:bg-neutral-800 border-0 shadow-lg rounded-2xl;
+}
+
+.react-datepicker__header {
+  @apply bg-transparent border-0;
+}
+
+.react-datepicker__month-container {
+  @apply w-full;
+}
+
+.react-datepicker__day-names {
+  @apply border-b border-neutral-200 dark:border-neutral-700;
+}
+
+.react-datepicker__day-name {
+  @apply text-neutral-500 dark:text-neutral-400 font-medium text-sm w-10 h-10 leading-10 m-0;
+}
+
+.react-datepicker__day {
+  @apply text-neutral-900 dark:text-white font-medium text-sm w-10 h-10 leading-10 m-0 rounded-full;
+}
+
+.react-datepicker__day:hover {
+  @apply bg-neutral-100 dark:bg-neutral-700 rounded-full;
+}
+
+.react-datepicker__day--selected {
+  @apply bg-indigo-500 text-white rounded-full hover:bg-indigo-600 border-0;
+}
+
+.react-datepicker__day--keyboard-selected {
+  @apply bg-indigo-500 text-white rounded-full hover:bg-indigo-600 border-0;
+}
+
+.react-datepicker__day--disabled {
+  @apply text-neutral-400 dark:text-neutral-600 cursor-not-allowed;
+}
+
+.react-datepicker__day--disabled:hover {
+  @apply bg-transparent;
+}
+
+.react-datepicker__day--today {
+  @apply font-bold text-indigo-500 dark:text-indigo-400;
+}
+
+.react-datepicker__day--outside-month {
+  @apply text-neutral-300 dark:text-neutral-600;
+}
+
+.react-datepicker__triangle {
+  @apply hidden;
+}
+
+.custom-calendar {
+  @apply w-full;
+}
+
+.custom-month {
+  @apply text-neutral-900 dark:text-white font-medium;
+}
+
+.custom-week-day {
+  @apply text-neutral-500 dark:text-neutral-400 font-medium;
+}
+
+.react-datepicker__current-month {
+  @apply text-neutral-900 dark:text-white font-semibold text-base mb-2;
+}
+
+.react-datepicker__navigation {
+  @apply top-4;
+}
+
+.react-datepicker__navigation-icon::before {
+  @apply border-neutral-500;
+}
+
+.react-datepicker__navigation:hover *::before {
+  @apply border-indigo-500;
+}
+
+.react-datepicker__input-container input {
+  @apply w-full py-3 px-4 pl-10 border border-neutral-200 rounded-2xl text-sm text-neutral-900 bg-white;
+}
+
+.react-datepicker__input-container input:focus {
+  @apply outline-none border-indigo-500 ring-2 ring-indigo-200;
+}
+
+.react-datepicker__input-container input::placeholder {
+  @apply text-neutral-400;
+}
+
+.custom-calendar .react-datepicker__header {
+  @apply bg-white dark:bg-neutral-800 border-0;
+}
+
+.custom-calendar .react-datepicker__current-month {
+  @apply text-lg font-semibold text-neutral-900 dark:text-white mb-4;
+}
+
+.custom-calendar .react-datepicker__day-names {
+  @apply border-b border-neutral-200 dark:border-neutral-700 pb-2 mb-2;
+}
+
+.custom-calendar .react-datepicker__day-name {
+  @apply text-neutral-500 dark:text-neutral-400 font-medium text-sm w-10 h-10 leading-10 m-0;
+}
+
+.custom-calendar .react-datepicker__month {
+  @apply m-0;
+}
+
+.custom-calendar .react-datepicker__day {
+  @apply w-10 h-10 leading-10 m-0 text-sm font-medium text-neutral-700 dark:text-neutral-300 
+  hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded-full transition-colors;
+}
+
+.custom-calendar .react-datepicker__day--selected {
+  @apply bg-indigo-500 text-white hover:bg-indigo-600 border-0;
+}
+
+.custom-calendar .react-datepicker__day--keyboard-selected {
+  @apply bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400;
+}
+
+.custom-calendar .react-datepicker__day--disabled {
+  @apply text-neutral-300 dark:text-neutral-600 hover:bg-transparent cursor-not-allowed;
+}
+
+.custom-calendar .react-datepicker__navigation {
+  @apply top-4;
+}
+
+.custom-calendar .react-datepicker__navigation--previous {
+  @apply left-4;
+}
+
+.custom-calendar .react-datepicker__navigation--next {
+  @apply right-4;
+}
+
+.custom-calendar .react-datepicker__navigation-icon::before {
+  @apply border-neutral-500 dark:border-neutral-400 border-2 border-r-0 border-t-0 w-2 h-2;
+}
+
+.custom-calendar .react-datepicker__navigation:hover .react-datepicker__navigation-icon::before {
+  @apply border-indigo-500;
+}
+
+.custom-calendar .react-datepicker__day--today {
+  @apply font-bold text-indigo-500 dark:text-indigo-400;
+}
+
+.custom-calendar .react-datepicker__day--outside-month {
+  @apply text-neutral-300 dark:text-neutral-600;
+}
+
+.custom-calendar .react-datepicker__triangle {
+  @apply hidden;
+}
+
+.custom-calendar .react-datepicker__day--today.react-datepicker__day--selected {
+  @apply bg-indigo-500 text-white;
+} 

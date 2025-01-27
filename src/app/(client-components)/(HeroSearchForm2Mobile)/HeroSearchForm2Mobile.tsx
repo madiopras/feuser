@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useRef } from "react";
 import { Dialog, Tab, Transition } from "@headlessui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/24/solid";
@@ -9,12 +9,19 @@ import { useTimeoutFn } from "react-use";
 import BusSearchForm from "./(bus-search-form)/BusSearchForm";
 import { usePathname } from "next/navigation";
 
+interface BusSearchFormRef {
+  handleSubmit: () => Promise<void>;
+  handleReset: () => void;
+}
+
 const HeroSearchForm2Mobile = () => {
   const [showModal, setShowModal] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [isTop, setIsTop] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
+  const busSearchFormRef = useRef<BusSearchFormRef>(null);
   let [, , resetIsShowingDialog] = useTimeoutFn(() => setShowDialog(true), 1);
 
   useEffect(() => {
@@ -45,6 +52,28 @@ const HeroSearchForm2Mobile = () => {
   function openModal() {
     setShowModal(true);
   }
+
+  const handleSearch = async () => {
+    try {
+      setIsLoading(true);
+      if (busSearchFormRef.current) {
+        await busSearchFormRef.current.handleSubmit();
+        closeModal();
+      }
+    } catch (error) {
+      console.error("Error during search:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleReset = () => {
+    if (busSearchFormRef.current) {
+      busSearchFormRef.current.handleReset();
+    }
+    setShowDialog(false);
+    resetIsShowingDialog();
+  };
 
   const renderButtonOpenModal = () => {
     return (
@@ -143,7 +172,7 @@ const HeroSearchForm2Mobile = () => {
                         <Tab.Panels className="py-4 px-1.5 sm:px-4">
                           <Tab.Panel>
                             <div className="transition-opacity animate-[myblur_0.4s_ease-in-out]">
-                              <BusSearchForm />
+                              <BusSearchForm ref={busSearchFormRef} />
                             </div>
                           </Tab.Panel>
                         </Tab.Panels>
@@ -155,15 +184,25 @@ const HeroSearchForm2Mobile = () => {
                           <button
                             type="button"
                             className="text-neutral-500 underline text-sm"
-                            onClick={() => {
-                              setShowDialog(false);
-                              resetIsShowingDialog();
-                            }}
+                            onClick={handleReset}
                           >
                             Reset
                           </button>
-                          <ButtonSubmit onClick={closeModal}>
-                            Cari Jadwal
+                          <ButtonSubmit 
+                            onClick={handleSearch}
+                            disabled={isLoading}
+                          >
+                            {isLoading ? (
+                              <span className="inline-flex items-center">
+                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Mencari...
+                              </span>
+                            ) : (
+                              "Cari Jadwal"
+                            )}
                           </ButtonSubmit>
                         </div>
                       </div>

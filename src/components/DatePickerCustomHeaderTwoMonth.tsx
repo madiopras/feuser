@@ -1,4 +1,3 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import React from "react";
 import { ReactDatePickerCustomHeaderProps } from "react-datepicker";
 
@@ -9,36 +8,47 @@ const DatePickerCustomHeaderTwoMonth = ({
   increaseMonth,
 }: ReactDatePickerCustomHeaderProps) => {
   return (
-    <div>
+    <div className="flex items-center justify-between px-4 py-2">
       <button
-        aria-label="Previous Month"
-        className={
-          "react-datepicker__navigation react-datepicker__navigation--previous absolute -top-1 left-0 flex items-center justify-center p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-        }
-        style={customHeaderCount === 1 ? { visibility: "hidden" } : {}}
         onClick={decreaseMonth}
-        type="button"
+        className="p-1 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700"
       >
-        <span className="react-datepicker__navigation-icon react-datepicker__navigation-icon--previous">
-          <ChevronLeftIcon className="w-5 h-5" />
-        </span>
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.5}
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
       </button>
-      <span className="react-datepicker__current-month">
-        {monthDate.toLocaleString("en-US", {
-          month: "long",
-          year: "numeric",
-        })}
-      </span>
-      <button
-        aria-label="Next Month"
-        className="react-datepicker__navigation react-datepicker__navigation--next absolute -top-1 -right-0 flex items-center justify-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full"
-        style={customHeaderCount === 0 ? { visibility: "hidden" } : {}}
-        type="button"
-        onClick={increaseMonth}
-      >
-        <span className="react-datepicker__navigation-icon react-datepicker__navigation-icon--next">
-          <ChevronRightIcon className="w-5 h-5" />
+      <div className="flex-grow text-center">
+        <span className="text-lg font-semibold">
+          {monthDate.toLocaleString("default", { month: "long", year: "numeric" })}
         </span>
+      </div>
+      <button
+        onClick={increaseMonth}
+        className="p-1 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700"
+      >
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.5}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
       </button>
     </div>
   );

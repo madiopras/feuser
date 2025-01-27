@@ -6,6 +6,7 @@ interface Props {
   onClick?: () => void;
   href?: PathName;
   children?: React.ReactNode;
+  disabled?: boolean;
 }
 
 const ButtonSubmit: FC<Props> = ({
@@ -13,6 +14,7 @@ const ButtonSubmit: FC<Props> = ({
   onClick = () => {},
   href = "/listing-stay",
   children,
+  disabled = false,
 }) => {
   return (
     <button
@@ -21,7 +23,10 @@ const ButtonSubmit: FC<Props> = ({
         e.preventDefault();
         onClick();
       }}
-      className={`flex-shrink-0 px-4 py-2.5 cursor-pointer rounded-xl bg-primary-6000 flex items-center justify-center text-neutral-50 focus:outline-none ${className} relative z-20`}
+      disabled={disabled}
+      className={`flex-shrink-0 px-4 py-2.5 cursor-pointer rounded-xl bg-primary-6000 flex items-center justify-center text-neutral-50 focus:outline-none ${className} relative z-20 ${
+        disabled ? 'opacity-50 cursor-not-allowed' : ''
+      }`}
     >
       {children}
     </button>

@@ -7,13 +7,14 @@ import Button from "@/shared/Button";
 
 export interface NcModalProps {
   renderContent: () => ReactNode;
-  renderTrigger?: (openModal: Function) => ReactNode;
+  renderTrigger?: (openModal: () => void) => ReactNode;
   contentExtraClass?: string;
   contentPaddingClass?: string;
   triggerText?: ReactNode;
   modalTitle?: ReactNode;
-  isOpenProp?: boolean;
+  isOpen?: boolean;
   onCloseModal?: () => void;
+  modalSubtitle?: string;
 }
 
 const NcModal: FC<NcModalProps> = ({
@@ -23,53 +24,57 @@ const NcModal: FC<NcModalProps> = ({
   contentPaddingClass = "py-4 px-6 md:py-5",
   triggerText = "Open Modal",
   modalTitle = "Modal title",
-  isOpenProp,
+  isOpen,
   onCloseModal,
+  modalSubtitle,
 }) => {
-  let [isOpen, setIsOpen] = useState(!!isOpenProp);
+  let [isOpenState, setIsOpenState] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   function closeModal() {
-    if (typeof isOpenProp !== "boolean") {
-      setIsOpen(false);
+    if (typeof isOpen === "boolean") {
+      onCloseModal && onCloseModal();
+    } else {
+      setIsOpenState(false);
     }
-    onCloseModal && onCloseModal();
   }
 
   function openModal() {
-    if (typeof isOpenProp !== "boolean") {
-      setIsOpen(true);
+    if (typeof isOpen === "boolean") {
+      onCloseModal && onCloseModal();
+    } else {
+      setIsOpenState(true);
     }
   }
 
-  useEffect(() => {
-    setIsOpen(!!isOpenProp);
-  }, [isOpenProp]);
+  const isOpenModal = typeof isOpen === "boolean" ? isOpen : isOpenState;
+
+  if (!mounted) return null;
 
   return (
     <div className="nc-NcModal">
-      {renderTrigger ? (
-        renderTrigger(openModal)
-      ) : (
-        <Button onClick={openModal}> {triggerText} </Button>
-      )}
-
-      <Transition appear show={isOpen} as={Fragment}>
+      {renderTrigger && renderTrigger(openModal)}
+      <Transition appear show={isOpenModal} as={Fragment}>
         <Dialog
           as="div"
           className="fixed inset-0 z-50 overflow-y-auto"
           onClose={closeModal}
         >
-          <div className="min-h-screen px-1 text-center md:px-4">
+          <div className="min-h-screen px-4 text-center">
             <Transition.Child
               as={Fragment}
-              enter="ease-out duration-75"
+              enter="ease-out duration-300"
               enterFrom="opacity-0"
               enterTo="opacity-100"
-              leave="ease-in duration-75"
+              leave="ease-in duration-200"
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Dialog.Overlay className="fixed inset-0 bg-neutral-900 bg-opacity-50 dark:bg-opacity-80" />
+              <div className="fixed inset-0 bg-black/50 dark:bg-opacity-80" aria-hidden="true" />
             </Transition.Child>
 
             {/* This element is to trick the browser into centering the modal contents. */}
@@ -81,32 +86,36 @@ const NcModal: FC<NcModalProps> = ({
             </span>
             <Transition.Child
               as={Fragment}
-              enter="ease-out duration-75"
+              enter="ease-out duration-300"
               enterFrom="opacity-0 scale-95"
               enterTo="opacity-100 scale-100"
-              leave="ease-in duration-75"
+              leave="ease-in duration-200"
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div
-                className={`inline-block w-full my-5 overflow-hidden text-left align-middle transition-all transform bg-white border border-black border-opacity-5 shadow-xl rounded-2xl sm:my-8 dark:bg-neutral-800 dark:border-neutral-700 text-neutral-900 dark:text-neutral-300 ${contentExtraClass}`}
+              <Dialog.Panel
+                className={`inline-block w-full ${contentExtraClass} my-5 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-neutral-800 dark:border dark:border-neutral-700 shadow-xl rounded-2xl sm:my-8`}
               >
-                <div className="py-4 px-6 text-center relative border-b border-neutral-100 dark:border-neutral-700 md:py-5">
-                  <ButtonClose
-                    onClick={closeModal}
-                    className="absolute left-2 top-1/2 transform -translate-y-1/2 sm:left-4"
-                  />
+                <div className={contentPaddingClass}>
                   {modalTitle && (
                     <Dialog.Title
                       as="h3"
-                      className="text-base font-semibold text-neutral-900 lg:text-xl dark:text-neutral-200 mx-10"
+                      className="text-xl font-semibold text-neutral-900 dark:text-neutral-200 md:text-2xl"
                     >
                       {modalTitle}
                     </Dialog.Title>
                   )}
+                  {modalSubtitle && (
+                    <Dialog.Description
+                      as="span"
+                      className="text-sm text-neutral-500 dark:text-neutral-400"
+                    >
+                      {modalSubtitle}
+                    </Dialog.Description>
+                  )}
+                  {renderContent()}
                 </div>
-                <div className={contentPaddingClass}>{renderContent()}</div>
-              </div>
+              </Dialog.Panel>
             </Transition.Child>
           </div>
         </Dialog>
