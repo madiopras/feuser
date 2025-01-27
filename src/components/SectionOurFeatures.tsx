@@ -30,39 +30,36 @@ const SectionOurFeatures: FC<SectionOurFeaturesProps> = ({
         }`}
       >
         <span className="uppercase text-sm text-gray-400 tracking-widest">
-          BENnefits
+          Keuntungan
         </span>
-        <h2 className="font-semibold text-4xl mt-5">Happening cities </h2>
+        <h2 className="font-semibold text-4xl mt-5">Kenapa Memilih Kami?</h2>
 
         <ul className="space-y-10 mt-16">
           <li className="space-y-4">
-            <Badge name="Advertising" />
+            <Badge name="Online" />
             <span className="block text-xl font-semibold">
-              Cost-effective advertising
+              Pesan Tiket Online 24 Jam
             </span>
             <span className="block mt-5 text-neutral-500 dark:text-neutral-400">
-              With a free listing, you can advertise your rental with no upfront
-              costs
+              Booking tiket bus kapan saja melalui website atau aplikasi mobile
             </span>
           </li>
           <li className="space-y-4">
-            <Badge color="green" name="Exposure " />
+            <Badge color="green" name="Nyaman" />
             <span className="block text-xl font-semibold">
-              Reach millions with Chisfis
+              Armada Terawat Ber-AC
             </span>
             <span className="block mt-5 text-neutral-500 dark:text-neutral-400">
-              Millions of people are searching for unique places to stay around
-              the world
+              Perjalanan nyaman dengan fasilitas lengkap dan kondisi bus prima
             </span>
           </li>
           <li className="space-y-4">
-            <Badge color="red" name="Secure" />
+            <Badge color="red" name="Lengkap" />
             <span className="block text-xl font-semibold">
-              Secure and simple
+              Fasilitas Penunjang Perjalanan
             </span>
             <span className="block mt-5 text-neutral-500 dark:text-neutral-400">
-              A Holiday Lettings listing gives you a secure and easy way to take
-              bookings and payments online
+              Tiket elektronik, asuransi perjalanan, dan fasilitas hiburan onboard
             </span>
           </li>
         </ul>

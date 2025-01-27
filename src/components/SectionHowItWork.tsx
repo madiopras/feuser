@@ -21,20 +21,20 @@ const DEMO_DATA: SectionHowItWorkProps["data"] = [
   {
     id: 1,
     img: HIW1img,
-    title: "Book & relax",
-    desc: "Let each trip be an inspirational journey, each room a peaceful space",
+    title: "Cari Rute & Jadwal",
+    desc: "Temukan jurusan tujuan dan pilih jadwal yang sesuai",
   },
   {
     id: 2,
     img: HIW2img,
-    title: "Smart checklist",
-    desc: "Let each trip be an inspirational journey, each room a peaceful space",
+    title: "Pilih Kursi & Bayar",
+    desc: "Pilih tempat duduk favorit Anda dan lakukan pembayaran",
   },
   {
     id: 3,
     img: HIW3img,
-    title: "Save more",
-    desc: "Let each trip be an inspirational journey, each room a peaceful space",
+    title: "E-Ticket & Boarding",
+    desc: "Dapatkan tiket digital dan tunjukkan saat boarding",
   },
 ];
 
@@ -47,8 +47,8 @@ const SectionHowItWork: FC<SectionHowItWorkProps> = ({
       className={`nc-SectionHowItWork  ${className}`}
       data-nc-id="SectionHowItWork"
     >
-      <Heading isCenter desc="Keep calm & travel on">
-        How it work
+      <Heading isCenter desc="Nikmati Kemudahan Pesan Tiket Online">
+        Cara Memesan Tiket
       </Heading>
       <div className="mt-20 relative grid md:grid-cols-3 gap-20">
         <Image
