@@ -55,15 +55,15 @@
 }
 
 .custom-calendar {
-  @apply w-full;
+  @apply w-full border-0 shadow-none;
 }
 
 .custom-month {
-  @apply text-neutral-900 dark:text-white font-medium;
+  @apply text-neutral-900 dark:text-white;
 }
 
 .custom-week-day {
-  @apply text-neutral-500 dark:text-neutral-400 font-medium;
+  @apply text-neutral-500 dark:text-neutral-400 uppercase text-xs font-medium;
 }
 
 .react-datepicker__current-month {
@@ -111,7 +111,7 @@
 }
 
 .custom-calendar .react-datepicker__month {
-  @apply m-0;
+  @apply p-0 mt-0;
 }
 
 .custom-calendar .react-datepicker__day {
@@ -165,4 +165,36 @@
 
 .custom-calendar .react-datepicker__day--today.react-datepicker__day--selected {
   @apply bg-indigo-500 text-white;
+}
+
+.react-datepicker {
+  @apply font-sans border-0 !important;
+}
+
+.react-datepicker__month-container {
+  @apply w-full;
+}
+
+.react-datepicker__month {
+  @apply p-0 mt-0;
+}
+
+.react-datepicker__day-names, .react-datepicker__week {
+  @apply flex justify-around;
+}
+
+.react-datepicker__day-name, .react-datepicker__day {
+  @apply w-10 h-10 flex items-center justify-center m-0;
+}
+
+.react-datepicker__day:hover {
+  @apply rounded-full bg-neutral-100 dark:bg-neutral-700;
+}
+
+.react-datepicker__day--selected {
+  @apply bg-indigo-500 text-white rounded-full hover:bg-indigo-600 !important;
+}
+
+.react-datepicker__day--disabled {
+  @apply text-neutral-300 dark:text-neutral-600 cursor-not-allowed hover:bg-transparent;
 } 

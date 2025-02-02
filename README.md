@@ -1,4 +1,4 @@
-# Online Booking NextJs Template: Chisfis
+# Sumatra Bus - Booking Online: Chisfis
 
 Welcome to **Chisfis**, a responsive Nextjs template theme tailored for Online booking, Listing, Real Estate, and booking systems. Whether you're running an accommodation service, travel experience, cruise, car rental, real estate, or a travel agency, Chisfis has got you covered.
 
@@ -29,8 +29,8 @@ Welcome to **Chisfis**, a responsive Nextjs template theme tailored for Online b
 
 1. Clone the repository.
 2. Navigate to the `app` directory.
-3. Install dependencies using `npm install` or `yarn install`.
-4. Run the development server using `npm run dev` or `yarn dev`.
+3. Install dependencies using `npm install`
+4. Run the development server using `npm run dev`
 5. Explore the documentation for more details.
 
 ## 🙏 Acknowledgements
@@ -39,4 +39,4 @@ A big shoutout to all the libraries, plugins, and assets that made this project 
 
 ---
 
-Crafted with ❤️ by [Hamed Hasan](https://github.com/Hamed-Hasan). Connect with me on [LinkedIn](https://www.linkedin.com/in/hamed-hasan).
+Crafted with ❤️ by [Madio Prasetyo](https://github.com/madiopras). Connect with me on [LinkedIn](https://www.linkedin.com/in/madiopras).

@@ -5,8 +5,7 @@ import SearchDropdown from "./SearchDropdown";
 import ButtonPrimary from "@/shared/ButtonPrimary";
 import MenuBar from "@/shared/MenuBar";
 import SwitchDarkMode from "@/shared/SwitchDarkMode";
-import HeroSearchForm2MobileFactory from "../(HeroSearchForm2Mobile)/HeroSearchForm2MobileFactory";
-import LangDropdown from "./LangDropdown";
+import HeroSearchForm2MobileFactory from "@/app/(client-components)/(HeroSearchForm2Mobile)/HeroSearchForm2MobileFactory";
 
 export interface MainNav1Props {
   className?: string;
@@ -23,13 +22,11 @@ const MainNav1: FC<MainNav1Props> = ({ className = "" }) => {
           <Navigation />
         </div>
 
-        {showSearchForm && (
-          <div className="flex lg:hidden flex-[3] max-w-lg !mx-auto md:px-3 ">
-            <div className="self-center flex-1">
-              <HeroSearchForm2MobileFactory />
-            </div>
+        <div className="flex lg:hidden flex-[3] max-w-lg !mx-auto md:px-3 ">
+          <div className="self-center flex-1">
+            <HeroSearchForm2MobileFactory />
           </div>
-        )}
+        </div>
 
         <div className="hidden md:flex flex-shrink-0 justify-end flex-1 lg:flex-none text-neutral-700 dark:text-neutral-100">
           <div className="hidden xl:flex space-x-0.5">

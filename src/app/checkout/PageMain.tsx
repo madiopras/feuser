@@ -1504,8 +1504,6 @@ const renderStep3 = () => {
   );
 };
 
-<<<<<<< HEAD
-=======
 const renderConfirmationModal = () => {
   return (
     <Dialog
@@ -1823,5 +1821,4 @@ return (
 );
 };
 
->>>>>>> origin/dev_afan
 export default CheckOutPagePageMain;

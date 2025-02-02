@@ -1,10 +1,11 @@
 "use client";
 import React, { FC } from "react";
-import { GuestsObject } from "../../type";
 
 export interface GuestsInputProps {
-  defaultValue: GuestsObject;
-  onChange?: (data: GuestsObject) => void;
+  defaultValue: {
+    guestAdults: number;
+  };
+  onChange?: (data: { guestAdults: number }) => void;
   maxValue?: number;
   minValue?: number;
 }
@@ -21,8 +22,6 @@ const GuestsInput: FC<GuestsInputProps> = ({
     onChange &&
       onChange({
         guestAdults: newValue,
-        guestChildren: 0,
-        guestInfants: 0,
       });
   };
 
