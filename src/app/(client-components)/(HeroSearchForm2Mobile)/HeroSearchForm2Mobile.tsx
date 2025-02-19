@@ -14,6 +14,7 @@ import GuestsInput from "./GuestsInput";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { id } from 'date-fns/locale';
+import MobileSearchBar from "@/components/MobileSearchBar";
 
 interface BusSearchFormRef {
   handleSubmit: () => Promise<void>;
@@ -488,39 +489,17 @@ const HeroSearchForm2Mobile = () => {
   };
 
   return (
-    <div className="HeroSearchForm2Mobile">
-      <div
-        className={`fixed inset-x-0 top-0 h-16 bg-white dark:bg-neutral-900 z-30 lg:hidden transition-all duration-200 ${
-          isTop ? "translate-y-[-100%]" : "translate-y-0 shadow-lg"
-        }`}
-      >
-        <div className="container h-full px-4">
-          <div className="flex items-center justify-between w-full h-full">
-            <button
-              onClick={() => setShowModal(true)}
-              className="flex-1 flex items-center space-x-3 px-4 py-2 border border-neutral-300 dark:border-neutral-700 rounded-full shadow hover:shadow-lg"
-            >
-              <MagnifyingGlassIcon className="flex-shrink-0 w-5 h-5" />
-              <div className="flex-grow text-left">
-                <span className="block font-medium text-sm">Mau kemana?</span>
-                <span className="block mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
-                  Cari tujuan anda...
-                </span>
-              </div>
-            </button>
-          </div>
-        </div>
-      </div>
+    <>
+      <MobileSearchBar onOpenModal={openModal} />
+      
+      {/* Spacer */}
+      <div className="h-[60px] lg:h-0" />
 
-      {/* Tambahkan padding-top saat scroll untuk menghindari lompatan konten */}
-      <div className={`${!isTop ? "pt-16" : ""} lg:pt-0`}>
-        {renderButtonOpenModal()}
-      </div>
-
+      {/* Modal */}
       <Transition appear show={showModal} as={Fragment}>
-        <Dialog
-          as="div"
-          className="HeroSearchForm2Mobile__Dialog relative z-max"
+        <Dialog 
+          as="div" 
+          className="fixed inset-0 z-[2147483647] overflow-y-auto"
           onClose={closeModal}
         >
           <div className="fixed inset-0 bg-neutral-100 dark:bg-neutral-900">
@@ -601,7 +580,7 @@ const HeroSearchForm2Mobile = () => {
           </div>
         </Dialog>
       </Transition>
-    </div>
+    </>
   );
 };
 

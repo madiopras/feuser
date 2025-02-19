@@ -8,10 +8,17 @@ export interface HeaderProps {
 
 const Header: FC<HeaderProps> = () => {
   return (
-    <div
-      className="nc-Header sticky top-0 w-full left-0 right-0 z-40 nc-header-bg MainNav1">
-      <MainNav1 />
-    </div>
+    <>
+      {/* Desktop Header */}
+      <div className="hidden lg:block nc-Header sticky top-0 w-full left-0 right-0 z-40">
+        <MainNav1 />
+      </div>
+      
+      {/* Mobile Header - pushed down by search bar */}
+      <div className="lg:hidden nc-Header sticky top-[60px] w-full left-0 right-0 z-30">
+        <MainNav1 />
+      </div>
+    </>
   );
 };
 

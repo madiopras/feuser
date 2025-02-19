@@ -1,3 +1,117 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+/* Ensure proper sticky behavior */
+html {
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+body {
+  min-height: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Fix for mobile sticky header */
+.HeroSearchForm2Mobile {
+  position: relative;
+  z-index: 1000;
+}
+
+.HeroSearchForm2Mobile > div:first-child {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Ensure sticky search bar stays on top */
+.fixed {
+  position: fixed !important;
+}
+
+/* Force hardware acceleration for smooth fixed positioning */
+.fixed {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .HeroSearchForm2Mobile > div:first-child {
+    background: rgba(23, 23, 23, 0.95);
+  }
+  .fixed.bg-white\/95 {
+    background-color: rgba(23, 23, 23, 0.95);
+  }
+}
+
+/* Ensure proper stacking context */
+#__next {
+  isolation: isolate;
+}
+
+/* Mobile search bar styles */
+.mobile-search-fixed {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999 !important;
+}
+
+/* Force GPU acceleration */
+.mobile-search-fixed {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  perspective: 1000;
+  -webkit-perspective: 1000;
+}
+
+/* Remove other styles and focus on fixing the search bar */
+#__next, body {
+  isolation: isolate;
+}
+
+/* Override any other fixed positioning that might interfere */
+body > div {
+  position: relative !important;
+}
+
+/* Ensure our fixed search bar takes precedence */
+.fixed {
+  position: fixed !important;
+}
+
+/* Force maximum stacking context for our search bar */
+[style*="z-index: 2147483647"] {
+  position: fixed !important;
+  z-index: 2147483647 !important;
+}
+
+/* Force GPU acceleration */
+[style*="translate3d"] {
+  transform: translate3d(0,0,0) !important;
+  -webkit-transform: translate3d(0,0,0) !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  perspective: 1000px !important;
+  -webkit-perspective: 1000px !important;
+}

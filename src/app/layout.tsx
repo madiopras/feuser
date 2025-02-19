@@ -37,17 +37,24 @@ export default function RootLayout({
 
   return (
     <html lang="en" className={poppins.className}>
-      <body className="bg-white text-base dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200">
-        {/* <ClientCommons /> */}
-        <div className={`${isCheckoutPage ? 'hidden lg:block' : ''}`}>
-          <SiteHeader />
-        </div>
+      <body className="bg-white text-base dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200" style={{ isolation: 'isolate' }}>
+        <div className="relative" style={{ isolation: 'isolate' }}>
+          {/* Mobile search bar space */}
+          <div className="h-[60px] lg:hidden" aria-hidden="true" />
+          
+          {/* Header */}
+          <div className={`${isCheckoutPage ? 'hidden lg:block' : ''}`}>
+            <SiteHeader />
+          </div>
 
-        {children}
+          {/* Main content */}
+          {children}
 
-        <div className={`${isCheckoutPage ? 'hidden lg:block' : ''}`}>
-          <FooterNav />
-          <Footer />
+          {/* Footer */}
+          <div className={`${isCheckoutPage ? 'hidden lg:block' : ''}`}>
+            <FooterNav />
+            <Footer />
+          </div>
         </div>
       </body>
     </html>
