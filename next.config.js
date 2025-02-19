@@ -32,6 +32,9 @@ const nextConfig = {
       },
     ],
   },
+  server: {
+    port: 3005,
+  },
 };
 
 module.exports = nextConfig;

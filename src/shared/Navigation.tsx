@@ -1,12 +1,13 @@
 import React from "react";
 import Link from "next/link";
+import { Route } from "@/routers/types";
 
 const Navigation = () => {
   const menuItems = [
-    { href: "/", label: "Home" },
-    { href: "/bus-search", label: "Bus" },
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
+    { href: "/" as Route, label: "Home" },
+    { href: "/bus-search" as Route, label: "Bus" },
+    { href: "/about" as Route, label: "About" },
+    { href: "/contact" as Route, label: "Contact" },
   ];
 
   return (
@@ -27,4 +28,4 @@ const Navigation = () => {
   );
 };
 
-export default Navigation; 
+export default Navigation;

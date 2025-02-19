@@ -1,6 +1,7 @@
 import CardCategoryBox1 from "@/components/CardCategoryBox1";
 import Heading from "@/shared/Heading";
 import { TaxonomyType } from "@/data/types";
+import { Route } from "@/routers/types";
 import React from "react";
 
 export interface SectionGridCategoryBoxProps {
@@ -14,7 +15,7 @@ export interface SectionGridCategoryBoxProps {
 const DEMO_CATS: TaxonomyType[] = [
   {
     id: "1",
-    href: "/listing-stay-map",
+    href: "/listing-stay-map" as Route,
     name: "New Yourk",
     taxonomy: "category",
     count: 1882,
@@ -23,7 +24,7 @@ const DEMO_CATS: TaxonomyType[] = [
   },
   {
     id: "2",
-    href: "/listing-stay-map",
+    href: "/listing-stay-map" as Route,
     name: "Singapore",
     taxonomy: "category",
     count: 8288,
@@ -32,7 +33,7 @@ const DEMO_CATS: TaxonomyType[] = [
   },
   {
     id: "3",
-    href: "/listing-stay-map",
+    href: "/listing-stay-map" as Route,
     name: "Paris",
     taxonomy: "category",
     count: 1288,
@@ -41,7 +42,7 @@ const DEMO_CATS: TaxonomyType[] = [
   },
   {
     id: "4",
-    href: "/listing-stay-map",
+    href: "/listing-stay-map" as Route,
     name: "London",
     taxonomy: "category",
     count: 112,
@@ -50,7 +51,7 @@ const DEMO_CATS: TaxonomyType[] = [
   },
   {
     id: "5",
-    href: "/listing-stay-map",
+    href: "/listing-stay-map" as Route,
     name: "Tokyo",
     taxonomy: "category",
     count: 323,
@@ -59,7 +60,7 @@ const DEMO_CATS: TaxonomyType[] = [
   },
   {
     id: "6",
-    href: "/listing-stay-map",
+    href: "/listing-stay-map" as Route,
     name: "Maldives",
     taxonomy: "category",
     count: 2223,
@@ -68,7 +69,7 @@ const DEMO_CATS: TaxonomyType[] = [
   },
   {
     id: "7",
-    href: "/listing-stay-map",
+    href: "/listing-stay-map" as Route,
     name: "New Yourk",
     taxonomy: "category",
     count: 1775,
@@ -77,7 +78,7 @@ const DEMO_CATS: TaxonomyType[] = [
   },
   {
     id: "8",
-    href: "/listing-stay-map",
+    href: "/listing-stay-map" as Route,
     name: "Singapore",
     taxonomy: "category",
     count: 1288,

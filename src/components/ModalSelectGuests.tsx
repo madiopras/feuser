@@ -12,9 +12,8 @@ interface ModalSelectGuestsProps {
 
 const ModalSelectGuests: FC<ModalSelectGuestsProps> = ({ renderChildren }) => {
   const [showModal, setShowModal] = useState(false);
+  const [guestValue, setGuestValue] = useState({ guestAdults: 1 });
 
-  // FOR RESET ALL DATA WHEN CLICK CLEAR BUTTON
-  //
   function closeModal() {
     setShowModal(false);
   }
@@ -22,6 +21,10 @@ const ModalSelectGuests: FC<ModalSelectGuestsProps> = ({ renderChildren }) => {
   function openModal() {
     setShowModal(true);
   }
+
+  const handleClearData = () => {
+    setGuestValue({ guestAdults: 1 });
+  };
 
   const renderButtonOpenModal = () => {
     return renderChildren ? (
@@ -65,10 +68,13 @@ const ModalSelectGuests: FC<ModalSelectGuestsProps> = ({ renderChildren }) => {
                     <div className="flex-1 pt-12 p-1 flex flex-col overflow-hidden">
                       <div className="flex-1 flex flex-col overflow-hidden bg-white dark:bg-neutral-800">
                         <div className="flex-1 flex flex-col transition-opacity animate-[myblur_0.4s_ease-in-out] overflow-auto">
-                          <div
-                            className={`flex-1 relative flex z-10 overflow-hidden`}
-                          >
-                            <GuestsInput />
+                          <div className="flex-1 relative flex z-10 overflow-hidden">
+                            <GuestsInput 
+                              defaultValue={guestValue}
+                              onChange={(data) => setGuestValue(data)}
+                              maxValue={4}
+                              minValue={1}
+                            />
                           </div>
                         </div>
                       </div>
@@ -77,15 +83,13 @@ const ModalSelectGuests: FC<ModalSelectGuestsProps> = ({ renderChildren }) => {
                       <button
                         type="button"
                         className="underline font-semibold flex-shrink-0"
-                        onClick={() => {}}
+                        onClick={handleClearData}
                       >
                         Clear data
                       </button>
                       <ButtonPrimary
                         sizeClass="px-6 py-3 !rounded-xl"
-                        onClick={() => {
-                          closeModal();
-                        }}
+                        onClick={closeModal}
                       >
                         Save
                       </ButtonPrimary>
