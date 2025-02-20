@@ -23,6 +23,7 @@ import axios from "@/lib/axios";
 import BookingBusLayout from "@/app/booking-template/bussestype/BookingBusLayout";
 import BookingBusMiniLayout from "@/app/booking-template/bussestype/BookingBusMiniLayout";
 import BookingBusVipLayout from "@/app/booking-template/bussestype/BookingBusVipLayout";
+import { toast } from "react-hot-toast";
 
 export interface CheckOutPagePageMainProps {
   className?: string;
@@ -358,6 +359,7 @@ const CheckOutPagePageMain: FC<CheckOutPagePageMainProps> = ({ className = "" })
     email: '',
   });
   const [passengerErrors, setPassengerErrors] = useState<PassengerErrors[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const paymentMethods: PaymentMethod[] = [
     {
@@ -950,7 +952,7 @@ const CheckOutPagePageMain: FC<CheckOutPagePageMainProps> = ({ className = "" })
                       }}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-5.216-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                         </svg>
                         {passenger.seatNumber ? `Tempat Duduk ${passenger.seatNumber}` : 'Pilih Tempat Duduk'}
                     </button>
@@ -1318,6 +1320,90 @@ const renderStep2 = () => {
   );
 };
 
+const handleDownloadETicket = async () => {
+  // Prevent multiple clicks while loading
+  if (isLoading) return;
+
+  try {
+    if (!bookingData?.booking?.id) {
+      toast.error('Data booking tidak ditemukan');
+      return;
+    }
+
+    setIsLoading(true);
+
+    // Call the API to get e-ticket
+    const response = await axios.get(`/api/guest/e-ticket/${bookingData.booking.id}`);
+
+    if (response.data.status) {
+      // Show specific success notification based on delivery method
+      const emailSent = response.data.details.email_sent;
+      const whatsappSent = response.data.details.whatsapp_sent;
+
+      if (emailSent && whatsappSent) {
+        toast.success(
+          <div className="flex flex-col space-y-2">
+            <p className="font-medium">E-ticket berhasil dikirim!</p>
+            <div className="text-sm space-y-1">
+              <p className="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                E-ticket telah dikirim ke email Anda
+              </p>
+              <p className="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                </svg>
+                E-ticket telah dikirim via WhatsApp
+              </p>
+            </div>
+          </div>,
+          { duration: 5000 }
+        );
+      } else if (emailSent) {
+        toast.success(
+          <div className="flex flex-col space-y-2">
+            <p className="font-medium">E-ticket berhasil dikirim!</p>
+            <p className="flex items-center gap-2 text-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              E-ticket telah dikirim ke email Anda
+            </p>
+          </div>,
+          { duration: 5000 }
+        );
+      } else if (whatsappSent) {
+        toast.success(
+          <div className="flex flex-col space-y-2">
+            <p className="font-medium">E-ticket berhasil dikirim!</p>
+            <p className="flex items-center gap-2 text-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+              </svg>
+              E-ticket telah dikirim via WhatsApp
+            </p>
+          </div>,
+          { duration: 5000 }
+        );
+      }
+    } else {
+      throw new Error('Gagal mengirim e-ticket');
+    }
+  } catch (error) {
+    console.error('Error sending e-ticket:', error);
+    toast.error(
+      <div className="flex flex-col space-y-2">
+        <p className="font-medium">Gagal mengirim e-ticket</p>
+        <p className="text-sm">Mohon coba lagi dalam beberapa saat</p>
+      </div>
+    );
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 const renderStep3 = () => {
   const bookingDetails = bookingData?.booking;
   const paymentDetails = bookingData?.payment;
@@ -1387,11 +1473,24 @@ const renderStep3 = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
-          <ButtonPrimary className="flex items-center justify-center gap-2">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            Unduh E-Tiket
+          <ButtonPrimary 
+            onClick={handleDownloadETicket} 
+            className="flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                <span>Mengirim E-Ticket...</span>
+              </>
+            ) : (
+              <>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2v4l.586-.586z" />
+                </svg>
+                <span>Kirim E-Ticket</span>
+              </>
+            )}
           </ButtonPrimary>
           <button
             className="px-6 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
