@@ -7,7 +7,7 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 import ButtonSubmit from "./ButtonSubmit";
 import { useTimeoutFn } from "react-use";
 import { usePathname } from "next/navigation";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import LocationInput from "./LocationInput";
 import GuestsInput from "./GuestsInput";
@@ -84,7 +84,7 @@ const HeroSearchForm2Mobile = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/guest/locations/get-name');
+        const response = await axiosInstance.get('/api/guest/locations/get-name');
         if (response.data.status && response.data.data) {
           setLocations(response.data.data);
         }
@@ -95,7 +95,7 @@ const HeroSearchForm2Mobile = () => {
 
     const fetchBusClasses = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/guest/classes/get-name');
+        const response = await axiosInstance.get('/api/guest/classes/get-name');
         if (response.data.status && response.data.data) {
           const allClasses = [
             { id: 0, name: "Semua" },
@@ -158,7 +158,7 @@ const HeroSearchForm2Mobile = () => {
         }
       }
 
-      const response = await axios.get('http://127.0.0.1:8000/api/guest/schedule-rutes', { params });
+      const response = await axiosInstance.get('/api/guest/schedule-rutes', { params });
       
       if (response.data.status && response.data.data) {
         const searchParams = new URLSearchParams(params);
