@@ -22,7 +22,7 @@ const SectionHero: FC<SectionHeroProps> = ({ className = "" }) => {
           Bersama kami, perjalanan Anda jadi lebih nyaman dan praktis! Temukan rute
           terbaik, jadwal bus favorit, dan pesan tiket hanya dengan beberapa klik.
           </span>
-          <ButtonPrimary href="#" sizeClass="px-5 py-4 sm:px-7">
+          <ButtonPrimary href="/bus-search" sizeClass="px-5 py-4 sm:px-7">
           Mulai Cari Tiket
           </ButtonPrimary>
         </div>
