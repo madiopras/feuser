@@ -7,7 +7,7 @@ import "@/styles/index.scss";
 import "rc-slider/assets/index.css";
 import Footer from "@/components/Footer";
 import FooterNav from "@/components/FooterNav";
-
+import { headers } from 'next/headers';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -27,34 +27,35 @@ const poppins = Poppins({
 
 export default function RootLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: any;
 }) {
-  // Deteksi path checkout
-  const isCheckoutPage = params?.segments?.[0] === "checkout";
+  // Use pathname directly for more reliable detection
+  const headersList = headers();
+  const pathname = headersList.get("x-invoke-path") || "";
+  const isCheckoutPage = pathname.includes("/checkout");
 
   return (
     <html lang="en" className={poppins.className}>
-      <body className="bg-white text-base dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200" style={{ isolation: 'isolate' }}>
-        <div className="relative" style={{ isolation: 'isolate' }}>
+      <body className="bg-white text-base dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200">
+        <ClientCommons />
+        <div className="relative">
           {/* Mobile search bar space */}
           <div className="h-[60px] lg:hidden" aria-hidden="true" />
           
-          {/* Header */}
-          <div className={`${isCheckoutPage ? 'hidden lg:block' : ''}`}>
-            <SiteHeader />
-          </div>
+          {/* Header - completely hidden on checkout */}
+          {!isCheckoutPage && <SiteHeader />}
 
           {/* Main content */}
           {children}
 
-          {/* Footer */}
-          <div className={`${isCheckoutPage ? 'hidden lg:block' : ''}`}>
-            <FooterNav />
-            <Footer />
-          </div>
+          {/* Footer - completely hidden on checkout */}
+          {!isCheckoutPage && (
+            <>
+              <FooterNav />
+              <Footer />
+            </>
+          )}
         </div>
       </body>
     </html>

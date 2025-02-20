@@ -50,6 +50,11 @@ const FooterNav = () => {
 
   const pathname = usePathname();
 
+  // Don't render on checkout page
+  if (pathname?.includes('/checkout')) {
+    return null;
+  }
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.addEventListener("scroll", handleEvent);

@@ -139,7 +139,9 @@ const HeroSearchForm2Mobile = () => {
 
       const departureDate = new Date(selectedDate);
       const endDate = new Date(departureDate);
-      endDate.setDate(endDate.getDate() + 7);
+      //endDate.setDate(endDate.getDate() + 7);
+
+      endDate.setDate(endDate.getDate());
 
       const params: Record<string, string> = {
         page: "1",

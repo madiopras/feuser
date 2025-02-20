@@ -86,7 +86,9 @@ const BusSearchForm = () => {
     setIsLoading(true);
     const departureDate = new Date(selectedDate);
     const endDate = new Date(departureDate);
-    endDate.setDate(endDate.getDate() + 7);
+      //endDate.setDate(endDate.getDate() + 7);
+
+      endDate.setDate(endDate.getDate());
 
     try {
       const params: Record<string, string> = {
