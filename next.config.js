@@ -33,9 +33,6 @@ const nextConfig = {
     ],
     domains: ['127.0.0.1'],
   },
-  server: {
-    port: 3005,
-  },
   async headers() {
     return [
       {

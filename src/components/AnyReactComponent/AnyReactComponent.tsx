@@ -1,7 +1,7 @@
 "use client";
 
 import { Transition } from "@headlessui/react";
-import CarCard from "@/components/CarCard";
+import CarCardH from "@/components/CarCardH";
 import ExperiencesCard from "@/components/ExperiencesCard";
 import StayCard from "@/components/StayCard";
 import { CarDataType, ExperiencesDataType, StayDataType } from "@/data/types";
@@ -64,7 +64,7 @@ const AnyReactComponent: FC<AnyReactComponentProps> = ({
               className="shadow-2xl bg-white dark:bg-neutral-900 rounded-3xl"
             />
           )}
-          {car && <CarCard size="small" data={car} className="shadow-2xl " />}
+          {car && <CarCardH data={car} className="shadow-2xl" />}
         </div>
       </Transition>
     </div>
