@@ -254,63 +254,76 @@ const HeroSearchForm2Mobile = () => {
               <span className="text-lg font-semibold">
                 Pilih Tanggal Keberangkatan
               </span>
-              <DatePicker
-                selected={selectedDate}
-                onChange={(date) => {
-                  setSelectedDate(date);
-                  setFieldNameShow("locationPickup");
-                }}
-                inline
-                minDate={new Date()}
-                locale={id}
-                dateFormat="dd MMMM yyyy"
-                showDisabledMonthNavigation
-                calendarClassName="custom-calendar"
-                dayClassName={(date) => {
-                  if (selectedDate && date.toDateString() === selectedDate.toDateString()) {
-                    return "bg-indigo-500 text-white rounded-full hover:bg-indigo-600";
-                  }
-                  return "text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded-full";
-                }}
-                monthClassName={() => "custom-month"}
-                weekDayClassName={() => "custom-week-day"}
-                renderCustomHeader={({
-                  date,
-                  decreaseMonth,
-                  increaseMonth,
-                  prevMonthButtonDisabled,
-                  nextMonthButtonDisabled,
-                }) => (
-                  <div className="flex items-center justify-between px-4 py-2">
-                    <button
-                      onClick={decreaseMonth}
-                      disabled={prevMonthButtonDisabled}
-                      type="button"
-                      className={`p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700 ${
-                        prevMonthButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
-                    >
-                      <i className="las la-chevron-left text-xl"></i>
-                    </button>
-                    <h3 className="text-lg font-semibold">
-                      {date.toLocaleDateString('id-ID', {
-                        month: 'long',
-                        year: 'numeric',
-                      })}
-                    </h3>
-                    <button
-                      onClick={increaseMonth}
-                      disabled={nextMonthButtonDisabled}
-                      type="button"
-                      className={`p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700 ${
-                        nextMonthButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
-                    >
-                      <i className="las la-chevron-right text-xl"></i>
-                    </button>
-                  </div>
-                )}
-              />
+              <div className="react-datepicker-wrapper">
+                <DatePicker
+                  selected={selectedDate}
+                  onChange={(date) => {
+                    setSelectedDate(date);
+                    setFieldNameShow("locationPickup");
+                  }}
+                  inline
+                  minDate={new Date()}
+                  locale={id}
+                  dateFormat="dd MMMM yyyy"
+                  showDisabledMonthNavigation
+                  disabledKeyboardNavigation
+                  calendarClassName="custom-calendar shadow-lg border border-neutral-200 dark:border-neutral-700"
+                  dayClassName={(date) => {
+                    const dateString = date.toDateString();
+                    const selectedDateString = selectedDate?.toDateString();
+                    const isSelected = selectedDateString === dateString;
+                    const isToday = new Date().toDateString() === dateString;
+
+                    let className = "hover:bg-neutral-100 dark:hover:bg-neutral-700 relative text-sm font-medium rounded-full";
+                    if (isSelected) {
+                      className += " bg-primary-600 text-white hover:bg-primary-600";
+                    } else if (isToday) {
+                      className += " text-primary-600 font-bold";
+                    }
+                    return className;
+                  }}
+                  monthClassName={() => "text-lg font-medium"}
+                  weekDayClassName={() => "text-neutral-500 font-medium"}
+                  renderCustomHeader={({
+                    date,
+                    decreaseMonth,
+                    increaseMonth,
+                    prevMonthButtonDisabled,
+                    nextMonthButtonDisabled,
+                  }) => (
+                    <div className="flex items-center justify-between p-2 bg-white dark:bg-neutral-800">
+                      <button
+                        onClick={decreaseMonth}
+                        disabled={prevMonthButtonDisabled}
+                        type="button"
+                        className={`p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700 ${
+                          prevMonthButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                        tabIndex={0}
+                      >
+                        <i className="las la-chevron-left text-xl"></i>
+                      </button>
+                      <h3 className="text-lg font-semibold">
+                        {date.toLocaleDateString('id-ID', {
+                          month: 'long',
+                          year: 'numeric',
+                        })}
+                      </h3>
+                      <button
+                        onClick={increaseMonth}
+                        disabled={nextMonthButtonDisabled}
+                        type="button"
+                        className={`p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700 ${
+                          nextMonthButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                        tabIndex={0}
+                      >
+                        <i className="las la-chevron-right text-xl"></i>
+                      </button>
+                    </div>
+                  )}
+                />
+              </div>
             </div>
           </div>
         )}
