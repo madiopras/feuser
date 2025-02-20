@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import axios from "@/lib/axios";
+import axiosInstance from "@/lib/axios";
 import BusCard from "@/components/BusCard";
 import TabFilters from "../TabFilters";
 import SectionGridFilterCard from "../SectionGridFilterCard";
@@ -76,7 +76,7 @@ const ListingBusesPage = () => {
           selected_seats: searchParams?.get("selected_seats") || "1",
         };
 
-        const response = await axios.get<ApiResponse>("/api/guest/schedule-rutes", { params });
+        const response = await axiosInstance.get('/api/guest/schedule-rutes', { params });
 
         if (response.data.status) {
           setSchedules(response.data.data);
@@ -96,11 +96,12 @@ const ListingBusesPage = () => {
 
   const renderCard = (schedule: BusSchedule) => {
     const duration = calculateDuration(schedule.departure_time, schedule.arrival_time);
-    const logoUrl = "https://www.gstatic.com/flights/airline_logos/70px/KE.png"; // Logo statis
+    const logoUrl = "https://www.gstatic.com/flights/airline_logos/70px/KE.png";
+    const uniqueKey = `${schedule.schedule_id}-${schedule.schedule_rute_id}`;
 
     return (
       <BusCard
-        key={schedule.schedule_id}
+        key={uniqueKey}
         scheduleId={schedule.schedule_rute_id}
         departureTime={schedule.departure_time}
         arrivalTime={schedule.arrival_time}

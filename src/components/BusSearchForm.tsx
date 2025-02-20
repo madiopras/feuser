@@ -8,9 +8,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "@/styles/custom-datepicker.css";
 import { id } from 'date-fns/locale';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import ClientOnly from "@/components/ClientOnly";
+import axiosInstance from "@/lib/axios";
 
 interface Location {
   id: number;
@@ -45,7 +45,7 @@ const BusSearchForm = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/guest/locations/get-name');
+        const response = await axiosInstance.get('/api/guest/locations/get-name');
         if (response.data.status && response.data.data) {
           setLocations(response.data.data);
         }
@@ -56,7 +56,7 @@ const BusSearchForm = () => {
 
     const fetchBusClasses = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/guest/classes/get-name');
+        const response = await axiosInstance.get('/api/guest/classes/get-name');
         if (response.data.status && response.data.data) {
           const allClasses = [
             { id: 0, name: "Semua" },
@@ -86,7 +86,9 @@ const BusSearchForm = () => {
     setIsLoading(true);
     const departureDate = new Date(selectedDate);
     const endDate = new Date(departureDate);
-    endDate.setDate(endDate.getDate() + 7);
+      //endDate.setDate(endDate.getDate() + 7);
+
+      endDate.setDate(endDate.getDate());
 
     try {
       const params: Record<string, string> = {
@@ -106,7 +108,7 @@ const BusSearchForm = () => {
         }
       }
 
-      const response = await axios.get('http://127.0.0.1:8000/api/guest/schedule-rutes', { params });
+      const response = await axiosInstance.get('/api/guest/schedule-rutes', { params });
       
       if (response.data.status && response.data.data) {
         const searchParams = new URLSearchParams(params);
@@ -486,4 +488,4 @@ const BusSearchFormWrapper = () => {
   );
 };
 
-export default BusSearchFormWrapper; 
+export default BusSearchFormWrapper;

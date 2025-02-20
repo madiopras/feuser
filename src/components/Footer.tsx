@@ -5,6 +5,7 @@ import SocialsList1 from "@/shared/SocialsList1";
 import { CustomLink } from "@/data/types";
 import React from "react";
 import FooterNav from "./FooterNav";
+import { usePathname } from 'next/navigation';
 
 export interface WidgetFooterMenu {
   id: string;
@@ -51,6 +52,13 @@ const widgetMenus: WidgetFooterMenu[] = [
 ];
 
 const Footer: React.FC = () => {
+  const pathname = usePathname();
+  
+  // Don't render on checkout page
+  if (pathname?.includes('/checkout')) {
+    return null;
+  }
+
   const renderWidgetMenuItem = (menu: WidgetFooterMenu, index: number) => {
     return (
       <div key={index} className="text-sm">

@@ -403,4 +403,4 @@ const BusCard: React.FC<BusCardProps> = ({
   );
 };
 
-export default BusCard;
+export default React.memo(BusCard);

@@ -26,7 +26,8 @@ const LocationInput: React.FC<LocationInputProps> = ({
   const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/guest/locations/get-name")
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    fetch(`${apiUrl}/api/guest/locations/get-name`)
       .then((res) => res.json())
       .then((data) => {
         if (data.status && data.data) {

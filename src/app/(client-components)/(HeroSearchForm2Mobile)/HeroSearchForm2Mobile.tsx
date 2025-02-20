@@ -7,13 +7,14 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 import ButtonSubmit from "./ButtonSubmit";
 import { useTimeoutFn } from "react-use";
 import { usePathname } from "next/navigation";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import LocationInput from "./LocationInput";
 import GuestsInput from "./GuestsInput";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { id } from 'date-fns/locale';
+import MobileSearchBar from "@/components/MobileSearchBar";
 
 interface BusSearchFormRef {
   handleSubmit: () => Promise<void>;
@@ -83,7 +84,7 @@ const HeroSearchForm2Mobile = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/guest/locations/get-name');
+        const response = await axiosInstance.get('/api/guest/locations/get-name');
         if (response.data.status && response.data.data) {
           setLocations(response.data.data);
         }
@@ -94,7 +95,7 @@ const HeroSearchForm2Mobile = () => {
 
     const fetchBusClasses = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/guest/classes/get-name');
+        const response = await axiosInstance.get('/api/guest/classes/get-name');
         if (response.data.status && response.data.data) {
           const allClasses = [
             { id: 0, name: "Semua" },
@@ -138,7 +139,9 @@ const HeroSearchForm2Mobile = () => {
 
       const departureDate = new Date(selectedDate);
       const endDate = new Date(departureDate);
-      endDate.setDate(endDate.getDate() + 7);
+      //endDate.setDate(endDate.getDate() + 7);
+
+      endDate.setDate(endDate.getDate());
 
       const params: Record<string, string> = {
         page: "1",
@@ -157,7 +160,7 @@ const HeroSearchForm2Mobile = () => {
         }
       }
 
-      const response = await axios.get('http://127.0.0.1:8000/api/guest/schedule-rutes', { params });
+      const response = await axiosInstance.get('/api/guest/schedule-rutes', { params });
       
       if (response.data.status && response.data.data) {
         const searchParams = new URLSearchParams(params);
@@ -253,63 +256,76 @@ const HeroSearchForm2Mobile = () => {
               <span className="text-lg font-semibold">
                 Pilih Tanggal Keberangkatan
               </span>
-              <DatePicker
-                selected={selectedDate}
-                onChange={(date) => {
-                  setSelectedDate(date);
-                  setFieldNameShow("locationPickup");
-                }}
-                inline
-                minDate={new Date()}
-                locale={id}
-                dateFormat="dd MMMM yyyy"
-                showDisabledMonthNavigation
-                calendarClassName="custom-calendar"
-                dayClassName={(date) => {
-                  if (selectedDate && date.toDateString() === selectedDate.toDateString()) {
-                    return "bg-indigo-500 text-white rounded-full hover:bg-indigo-600";
-                  }
-                  return "text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded-full";
-                }}
-                monthClassName={() => "custom-month"}
-                weekDayClassName={() => "custom-week-day"}
-                renderCustomHeader={({
-                  date,
-                  decreaseMonth,
-                  increaseMonth,
-                  prevMonthButtonDisabled,
-                  nextMonthButtonDisabled,
-                }) => (
-                  <div className="flex items-center justify-between px-4 py-2">
-                    <button
-                      onClick={decreaseMonth}
-                      disabled={prevMonthButtonDisabled}
-                      type="button"
-                      className={`p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700 ${
-                        prevMonthButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
-                    >
-                      <i className="las la-chevron-left text-xl"></i>
-                    </button>
-                    <h3 className="text-lg font-semibold">
-                      {date.toLocaleDateString('id-ID', {
-                        month: 'long',
-                        year: 'numeric',
-                      })}
-                    </h3>
-                    <button
-                      onClick={increaseMonth}
-                      disabled={nextMonthButtonDisabled}
-                      type="button"
-                      className={`p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700 ${
-                        nextMonthButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
-                    >
-                      <i className="las la-chevron-right text-xl"></i>
-                    </button>
-                  </div>
-                )}
-              />
+              <div className="react-datepicker-wrapper">
+                <DatePicker
+                  selected={selectedDate}
+                  onChange={(date) => {
+                    setSelectedDate(date);
+                    setFieldNameShow("locationPickup");
+                  }}
+                  inline
+                  minDate={new Date()}
+                  locale={id}
+                  dateFormat="dd MMMM yyyy"
+                  showDisabledMonthNavigation
+                  disabledKeyboardNavigation
+                  calendarClassName="custom-calendar shadow-lg border border-neutral-200 dark:border-neutral-700"
+                  dayClassName={(date) => {
+                    const dateString = date.toDateString();
+                    const selectedDateString = selectedDate?.toDateString();
+                    const isSelected = selectedDateString === dateString;
+                    const isToday = new Date().toDateString() === dateString;
+
+                    let className = "hover:bg-neutral-100 dark:hover:bg-neutral-700 relative text-sm font-medium rounded-full";
+                    if (isSelected) {
+                      className += " bg-primary-600 text-white hover:bg-primary-600";
+                    } else if (isToday) {
+                      className += " text-primary-600 font-bold";
+                    }
+                    return className;
+                  }}
+                  monthClassName={() => "text-lg font-medium"}
+                  weekDayClassName={() => "text-neutral-500 font-medium"}
+                  renderCustomHeader={({
+                    date,
+                    decreaseMonth,
+                    increaseMonth,
+                    prevMonthButtonDisabled,
+                    nextMonthButtonDisabled,
+                  }) => (
+                    <div className="flex items-center justify-between p-2 bg-white dark:bg-neutral-800">
+                      <button
+                        onClick={decreaseMonth}
+                        disabled={prevMonthButtonDisabled}
+                        type="button"
+                        className={`p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700 ${
+                          prevMonthButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                        tabIndex={0}
+                      >
+                        <i className="las la-chevron-left text-xl"></i>
+                      </button>
+                      <h3 className="text-lg font-semibold">
+                        {date.toLocaleDateString('id-ID', {
+                          month: 'long',
+                          year: 'numeric',
+                        })}
+                      </h3>
+                      <button
+                        onClick={increaseMonth}
+                        disabled={nextMonthButtonDisabled}
+                        type="button"
+                        className={`p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700 ${
+                          nextMonthButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                        tabIndex={0}
+                      >
+                        <i className="las la-chevron-right text-xl"></i>
+                      </button>
+                    </div>
+                  )}
+                />
+              </div>
             </div>
           </div>
         )}
@@ -488,39 +504,17 @@ const HeroSearchForm2Mobile = () => {
   };
 
   return (
-    <div className="HeroSearchForm2Mobile">
-      <div
-        className={`fixed inset-x-0 top-0 h-16 bg-white dark:bg-neutral-900 z-30 lg:hidden transition-all duration-200 ${
-          isTop ? "translate-y-[-100%]" : "translate-y-0 shadow-lg"
-        }`}
-      >
-        <div className="container h-full px-4">
-          <div className="flex items-center justify-between w-full h-full">
-            <button
-              onClick={() => setShowModal(true)}
-              className="flex-1 flex items-center space-x-3 px-4 py-2 border border-neutral-300 dark:border-neutral-700 rounded-full shadow hover:shadow-lg"
-            >
-              <MagnifyingGlassIcon className="flex-shrink-0 w-5 h-5" />
-              <div className="flex-grow text-left">
-                <span className="block font-medium text-sm">Mau kemana?</span>
-                <span className="block mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
-                  Cari tujuan anda...
-                </span>
-              </div>
-            </button>
-          </div>
-        </div>
-      </div>
+    <>
+      <MobileSearchBar onOpenModal={openModal} />
+      
+      {/* Spacer */}
+      <div className="h-[60px] lg:h-0" />
 
-      {/* Tambahkan padding-top saat scroll untuk menghindari lompatan konten */}
-      <div className={`${!isTop ? "pt-16" : ""} lg:pt-0`}>
-        {renderButtonOpenModal()}
-      </div>
-
+      {/* Modal */}
       <Transition appear show={showModal} as={Fragment}>
-        <Dialog
-          as="div"
-          className="HeroSearchForm2Mobile__Dialog relative z-max"
+        <Dialog 
+          as="div" 
+          className="fixed inset-0 z-[2147483647] overflow-y-auto"
           onClose={closeModal}
         >
           <div className="fixed inset-0 bg-neutral-100 dark:bg-neutral-900">
@@ -601,7 +595,7 @@ const HeroSearchForm2Mobile = () => {
           </div>
         </Dialog>
       </Transition>
-    </div>
+    </>
   );
 };
 
