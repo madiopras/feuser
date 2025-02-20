@@ -291,11 +291,17 @@ const DateInput = ({
                 {Array.from({ length: 31 }, (_, i) => i + 1).map(day => (
                   <button
                     key={day}
-                    className={`p-2 text-sm rounded-md hover:bg-primary-50 ${
-                      selectedDate?.getDate() === day
+                    type="button"
+                    className={`p-2 text-sm rounded-md transition-colors
+                      ${selectedDate?.getDate() === day
                         ? 'bg-primary-500 text-white hover:bg-primary-600'
-                        : 'hover:text-primary-500'
-                    }`}
+                        : 'text-gray-700 hover:bg-primary-50 hover:text-primary-600'
+                      }
+                      ${day === new Date().getDate() && selectedDate?.getMonth() === new Date().getMonth() && selectedDate?.getFullYear() === new Date().getFullYear()
+                        ? 'ring-1 ring-primary-500'
+                        : ''
+                      }
+                    `}
                     onClick={() => {
                       const newDate = new Date(selectedDate || new Date());
                       newDate.setDate(day);
@@ -311,13 +317,15 @@ const DateInput = ({
 
           <div className="flex justify-between pt-3 border-t">
             <button
-              className="text-sm text-gray-600 hover:text-gray-800"
+              type="button"
+              className="text-sm text-gray-600 hover:text-gray-800 px-3 py-1 rounded-md hover:bg-gray-100 transition-colors"
               onClick={() => setShowDatePicker(false)}
             >
               Batal
             </button>
             <button
-              className="text-sm text-primary-500 font-medium hover:text-primary-600"
+              type="button"
+              className="text-sm text-white bg-primary-500 px-3 py-1 rounded-md hover:bg-primary-600 transition-colors"
               onClick={handleFinalSelection}
             >
               Pilih Tanggal
@@ -1347,7 +1355,7 @@ const handleDownloadETicket = async () => {
             <div className="text-sm space-y-1">
               <p className="flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2v4l.586-.586z" />
                 </svg>
                 E-ticket telah dikirim ke email Anda
               </p>
@@ -1367,7 +1375,7 @@ const handleDownloadETicket = async () => {
             <p className="font-medium">E-ticket berhasil dikirim!</p>
             <p className="flex items-center gap-2 text-sm">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2v4l.586-.586z" />
               </svg>
               E-ticket telah dikirim ke email Anda
             </p>
