@@ -92,9 +92,8 @@ export default function CheckPaymentPage() {
       const response = await apiClient.get(`/api/guest/e-ticket/${paymentData.data.booking.booking_id}`);
       
       if (response.data.status) {
-        toast.custom((t) => (
-          <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} 
-            max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex flex-col ring-1 ring-black ring-opacity-5
+        toast.custom((id) => (
+          <div className={`animate-enter max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex flex-col ring-1 ring-black ring-opacity-5
             transform transition-all duration-500 ease-in-out hover:shadow-2xl`}
           >
             <div className="p-4">
@@ -155,7 +154,7 @@ export default function CheckPaymentPage() {
                   </div>
                 </div>
                 <button
-                  onClick={() => toast.dismiss(t)}
+                  onClick={() => toast.dismiss(id)}
                   className="ml-4 flex-shrink-0 bg-white rounded-md p-1 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
                 >
                   <span className="sr-only">Close</span>
