@@ -75,7 +75,7 @@ interface ApiResponse {
 }
 
 interface PaymentMethod {
-  id: "qris" | "va" | "bank";
+  id: "qris" | "va" | "other";
   name: string;
   description: string;
   icon: any; // Sesuaikan dengan tipe icon yang benar
@@ -383,9 +383,9 @@ const CheckOutPagePageMain: FC<CheckOutPagePageMainProps> = ({ className = "" })
       icon: vaIcon,
     },
     {
-      id: "bank",
-      name: "Transfer Bank",
-      description: "Transfer langsung ke rekening bank",
+      id: "other",
+      name: "Other Payment",
+      description: "Transfer langsung ke Lainnya",
       icon: bankIcon,
     },
   ];
@@ -520,9 +520,9 @@ const CheckOutPagePageMain: FC<CheckOutPagePageMainProps> = ({ className = "" })
         serviceFee = 2000;
         serviceFeeLabel = 'Biaya Layanan Virtual Account';
         break;
-      case 'bank':
+      case 'other':
         serviceFee = 2000;
-        serviceFeeLabel = 'Biaya Layanan Transfer Bank';
+        serviceFeeLabel = 'Biaya Layanan Lainnya';
         break;
       default:
         serviceFeeLabel = 'Biaya Layanan';
@@ -728,7 +728,7 @@ const CheckOutPagePageMain: FC<CheckOutPagePageMainProps> = ({ className = "" })
           email: bookingInfo.email
         },
         payment_method: selectedPayment === 'qris' ? 'QRIS' : 
-                       selectedPayment === 'va' ? 'VA' : 'BANK',
+                       selectedPayment === 'va' ? 'VA' : 'other',
         customer_type: 'GUEST'
       };
 
@@ -1252,7 +1252,7 @@ const renderStep2 = () => {
                 <p className="text-sm text-gray-500">{method.description}</p>
                 <p className="text-xs text-primary-500 mt-1">
                   {method.id === 'qris' && 'Biaya layanan 0,7%'}
-                  {(method.id === 'va' || method.id === 'bank') && 'Biaya layanan Rp 2.000'}
+                  {(method.id === 'va' || method.id === 'other') && 'Biaya layanan Rp 2.000'}
                 </p>
               </div>
             </div>
