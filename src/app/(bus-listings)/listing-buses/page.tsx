@@ -72,7 +72,7 @@ const ListingBusesPage = () => {
           ke: searchParams?.get("ke"),
           departure_start: searchParams?.get("departure_start"),
           departure_end: searchParams?.get("departure_end"),
-          class: searchParams?.get("class"),
+          class_bus: searchParams?.get("class_bus"),
           selected_seats: searchParams?.get("selected_seats") || "1",
         };
 
