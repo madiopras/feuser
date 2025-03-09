@@ -103,7 +103,7 @@ const BusSearchForm = React.forwardRef<{ handleSubmit: () => Promise<void>; hand
       if (flightClassState !== "Semua") {
         const selectedClass = busClasses.find(bc => bc.name === flightClassState);
         if (selectedClass) {
-          params.class = selectedClass.id.toString();
+          params.class_bus = selectedClass.id.toString(); // Changed from class to class_bus
         }
       }
 
